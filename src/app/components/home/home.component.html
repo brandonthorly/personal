@@ -1,0 +1,42 @@
+<div class="description" *ngIf="!selectedElemRef">
+  <div>Welcome.</div>
+  <div>
+    This site is a place where I play with new ideas and try new things. The site itself is extremely simple by design.
+    It consists of a single page with different cards. Each card is essentially a sandbox for different front end
+    projects I'm working on. Click on a card to explore the project further.
+  </div>
+</div>
+<div class="example-wrapper">
+  <div #compCard (click)="selectExample(compElemRef)">
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar class="comp-avatar"></div>
+        <mat-card-title>Competition Simulation</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-competition-sim [showFullHeight]="selectedElemRef === compElemRef"></app-competition-sim>
+      </mat-card-content>
+      <mat-card-actions>
+        <a href="https://github.com/brandonthorly/personal/tree/master/src/app/components/viz-components/competition-sim" target="_blank">
+          <button mat-button (click)="$event.stopImmediatePropagation()">GIT</button>
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div #lofCard (click)="selectExample(lofElemRef)">
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar class="lof-avatar"></div>
+        <mat-card-title>Draggable Line of Flights</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-lof-viz [showFullHeight]="selectedElemRef === lofElemRef"></app-lof-viz>
+      </mat-card-content>
+      <mat-card-actions>
+        <a href="https://github.com/brandonthorly/personal/tree/master/src/app/components/viz-components/lof-viz" target="_blank">
+          <button mat-button (click)="$event.stopImmediatePropagation()">GIT</button>
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

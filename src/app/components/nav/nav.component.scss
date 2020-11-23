@@ -1,0 +1,49 @@
+@import "../../styles/variables";
+
+$icon-height: 25px;
+
+nav {
+  display: flex;
+  height: $nav-height;
+  padding: 0 $container-side-padding;
+  background: $primary-green;
+
+  .site-title {
+    line-height: $nav-height;
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+
+    > a {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #FFFFFF;
+      margin-right: 20px;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &.icon {
+        width: $icon-height;
+        height: $icon-height;
+        background-size: cover;
+      }
+
+      &.git {
+        background-image: url('../../../assets/GitHub-Mark-Light-120px-plus.png');
+      }
+
+      &.linkedin {
+        background-image: url('../../../assets/In-White-96@2x.png');
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins/dropdown-form.mixin";
+
+.comp-sim-wrapper {
+  .description {
+    > div {
+      font-size: 1rem;
+      margin: 20px 0;
+    }
+
+    .equation {
+      display: block;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 20px 0;
+    }
+  }
+
+  .configuration {
+    @include dropDownForm;
+  }
+}
+
+.svg-wrapper {
+  position: relative;
+  display: flex;
+
+  .details {
+    flex: 1;
+
+    .current-metric {
+      padding: 20px;
+      font-size: 2rem;
+      text-align: center;
+
+      span {
+        font-weight: 600;
+        color: $primary-green;
+      }
+    }
+
+    .chart {
+      width: 70%;
+      margin-left: 15%;
+    }
+  }
+}

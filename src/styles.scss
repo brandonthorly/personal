@@ -1,1 +1,38 @@
+@import "app/styles/variables";
+
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+a { text-decoration: none; }
+// MATERIAL OVERIDES
+
+.mat-raised-button.mat-primary {
+  background-color: $primary-green;
+}
+
+$card-header-height: 40px;
+
+mat-card {
+  .mat-card-avatar {
+    height: $card-header-height;
+    width: $card-header-height;
+  }
+
+  mat-card-header {
+    line-height: $card-header-height;
+  }
+}
+
+button {
+  &.mat-stroked-button,
+  &.mat-raised-button {
+    width: 200px;
+    margin-right: 20px;
+    border-radius: 0;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
