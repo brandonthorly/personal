@@ -13,15 +13,11 @@ import {Creature} from './models/creature';
   styleUrls: ['./competition-sim.component.scss']
 })
 export class CompetitionSimComponent implements AfterViewInit, OnChanges {
-  @Input() showFullHeight: boolean;
-
   private _creatures: Creature[];
 
   // viz variables
   private _colorScale: any;
-  private _defaultSvgHeight = 200;
   private _hostElement: HTMLElement;
-  private _livingCount: number;
   private _margin = 10;
   private _plotArea: Selection<BaseType, any, null, undefined>;
   private _radius = 10;
@@ -29,6 +25,8 @@ export class CompetitionSimComponent implements AfterViewInit, OnChanges {
   private _svgWidth: number;
   private _svgHeight: number;
   private _transition: Transition<BaseType, any, any, any>;
+
+  public livingCount: number;
 
   // config form variables
   public showConfigOptions = false;
@@ -39,7 +37,6 @@ export class CompetitionSimComponent implements AfterViewInit, OnChanges {
   public startingPopulationSizeControl: FormControl;
   public maxOffspringDeviationControl: FormControl;
   public gameSpeedControl: FormControl;
-  public defaultGreen = '#66BB6A';
   public leastFitColor = '#00BCD4';
   public mostFitColor = '#FFEE58';
   public strokeColor = '#000000';
@@ -135,7 +132,7 @@ export class CompetitionSimComponent implements AfterViewInit, OnChanges {
         );
       }
 
-      this._livingCount = this.startingPopulationSize.value;
+      this.livingCount = this.startingPopulationSize.value;
     }
   }
 
@@ -165,18 +162,11 @@ export class CompetitionSimComponent implements AfterViewInit, OnChanges {
   private prepSvg(): void {
     this._svg = d3.select(this._hostElement).select('svg');
 
-    if (this.showFullHeight) {
-      this._svg.attr('style', 'border: 1px solid black;');
-    } else {
-      this._svg.attr('style', 'border: 1px solid black; margin-left: 25%;');
-    }
-    this._svg.attr('height', this.showFullHeight ? '75vh' : this._defaultSvgHeight);
+    this._svg.attr('style', 'border: 1px solid black;');
 
     this._transition = this._svg.transition().ease(d3.easeSinInOut).delay(0).duration(300);
 
-    const svgHeight = this.showFullHeight ? this._hostElement.offsetHeight : this._defaultSvgHeight;
-
-    this._svg.attr('viewBox', `0, 0, ${this._hostElement.offsetWidth}, ${svgHeight}`);
+    this._svg.attr('viewBox', `0, 0, ${this._hostElement.offsetWidth}, ${this._hostElement.offsetHeight}`);
 
     this._svgWidth = this._hostElement.offsetWidth - (this._margin * 2);
     this._svgHeight = this._hostElement.offsetHeight - (this._margin * 2);
@@ -236,8 +226,8 @@ export class CompetitionSimComponent implements AfterViewInit, OnChanges {
         .map(c => c.attemptReproduction())
         .filter(c => !!c) as Creature[]
         ;
-    this._livingCount = living.length;
-    this._creatures.forEach(c => c.attempSurvival(this._livingCount));
+    this.livingCount = living.length;
+    this._creatures.forEach(c => c.attempSurvival(this.livingCount));
     this._creatures = this._creatures.concat(offspring);
     this._creatures.forEach(c => c.move(this._svgWidth, this._svgHeight));
     this.logStep();

@@ -7,21 +7,29 @@ import {ColorPickerModule} from 'ngx-color-picker';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {HomeComponent} from './components/home/home.component';
+import {MenuComponent} from './components/menu/menu.component';
 import {NavComponent} from './components/nav/nav.component';
 import {CompetitionSimComponent} from './components/viz-components/competition-sim/competition-sim.component';
+import {GameOfLifeComponent} from './components/viz-components/game-of-life/game-of-life.component';
 import {LofVizComponent} from './components/viz-components/lof-viz/lof-viz.component';
 import {PlotGraphComponent} from './components/viz-components/plot-graph/plot-graph.component';
 import {MaterialModules} from './material.modules';
+import { AntiobioticResistanceComponent } from './components/viz-components/antiobiotic-resistance/antiobiotic-resistance.component';
+import { GroceryQueueComponent } from './components/viz-components/grocery-queue/grocery-queue.component';
+import { BinDataBarGraphComponent } from './components/viz-components/bin-data-bar-graph/bin-data-bar-graph.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     NavComponent,
+    GameOfLifeComponent,
     CompetitionSimComponent,
     PlotGraphComponent,
     LofVizComponent,
+    MenuComponent,
+    AntiobioticResistanceComponent,
+    GroceryQueueComponent,
+    BinDataBarGraphComponent,
   ],
   imports: [
     BrowserModule,

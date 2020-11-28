@@ -1,0 +1,50 @@
+@import "styles/variables";
+
+app-nav {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: 10;
+}
+
+.container {
+  margin-top: $nav-height;
+  display: flex;
+  padding: 40px 2 * $container-side-padding 40px $container-side-padding;
+
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100vh;
+    overflow-y: scroll;
+    padding-right: 20px;
+
+    .welcome-text {
+      padding: 0 0 40px;
+      font-size: 14px;
+      color: $primary-green;
+    }
+  }
+
+  .right-column {
+    flex: 7;
+    padding-left: 20px;
+    height: 100vh;
+    overflow-y: scroll;
+  }
+}
+
+
+@media screen and (max-width: 1800px) {
+  .container .left-column .welcome-text {
+    font-size: 0.8rem;
+  }
+}
+
+
+@media screen and (max-width: 1024px) {
+  .container .left-column {
+    display: none;
+  }
+}

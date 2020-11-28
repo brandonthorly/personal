@@ -4,14 +4,14 @@ $icon-height: 25px;
 
 nav {
   display: flex;
-  height: $nav-height;
+  height: 40px;
   padding: 0 $container-side-padding;
   background: $primary-green;
 
   .site-title {
-    line-height: $nav-height;
+    line-height: 40px;
     color: #FFFFFF;
-    font-size: 1.2rem;
+    font-size: 16px;
     font-weight: 600;
   }
 
@@ -21,8 +21,12 @@ nav {
     justify-content: flex-end;
     flex: 1;
 
-    > a {
-      font-size: 1.1rem;
+    &.mobile {
+      display: none
+    }
+
+    a {
+      font-size: 14px;
       font-weight: 600;
       color: #FFFFFF;
       margin-right: 20px;
@@ -31,9 +35,16 @@ nav {
         opacity: 0.8;
       }
 
+      &.mail span {
+        font-size: 18px;
+        line-height: 18px;
+        height: 18px;
+        vertical-align: middle;
+      }
+
       &.icon {
-        width: $icon-height;
-        height: $icon-height;
+        width: 16px;
+        height: 16px;
         background-size: cover;
       }
 
@@ -43,6 +54,29 @@ nav {
 
       &.linkedin {
         background-image: url('../../../assets/In-White-96@2x.png');
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  nav {
+    .links {
+      &:not(.mobile) {
+        display: none;
+      }
+
+      &.mobile {
+        display: flex;
+      }
+
+      button {
+        color: #FFFFFF;
+        padding-right: 0;
+      }
+
+      a {
+        color: #000000;
       }
     }
   }

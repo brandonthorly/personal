@@ -1,0 +1,99 @@
+<div class="gq-viz-wrapper">
+  <div class="description">
+    <div class="button-wrapper">
+      <button mat-stroked-button color="primary" (click)="showConfigOptions = !showConfigOptions">Configure Game</button>
+      <button mat-stroked-button color="primary" (click)="reInitStore()">Reset World</button>
+<!--      <button mat-raised-button color="primary" [disabled]="running" (click)="step()">Step</button>-->
+      <button mat-raised-button color="primary" [disabled]="running" (click)="run()">Run</button>
+      <button mat-raised-button color="warn" [disabled]="!running" (click)="stop()">Stop</button>
+    </div>
+  </div>
+  <div class="configuration" [ngClass]="{'show': showConfigOptions}">
+    <form [formGroup]="configForm" (ngSubmit)="reInitStore()">
+      <mat-form-field>
+        <mat-label>Initial Shopper Count</mat-label>
+        <input matInput type="number" placeholder="Initial Shopper Count" [formControl]="initialShopperCountControl" min="1" max="30">
+        <mat-error *ngIf="initialShopperCountControl.invalid">Min: 1, Max: 30</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Checkout Count</mat-label>
+        <input matInput type="number" placeholder="Checkout Count" [formControl]="checkoutCountControl" min="1" max="10">
+        <mat-error *ngIf="checkoutCountControl.invalid">Min: 1, Max: 10</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Shopper Enter Frequency</mat-label>
+        <input matInput type="number" placeholder="Shopper Enter Frequency" [formControl]="shopperEntranceFrequencyControl" min="30" max="1800">
+        <mat-error *ngIf="shopperEntranceFrequencyControl.invalid">Min: 30s, Max: 1800s</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Shopper Items RV Mean</mat-label>
+        <input matInput type="number" placeholder="Shopper Items RV Mean" [formControl]="shopperItemsRVMeanControl" min="5" max="50">
+        <mat-error *ngIf="shopperItemsRVMeanControl.invalid">Min: 5, Max: 50</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Shopper Items RV Std. Dev.</mat-label>
+        <input matInput type="number" placeholder="Shopper Items RV Std. Dev." [formControl]="shopperItemsRVStdDevControl" min="5" max="50">
+        <mat-error *ngIf="shopperItemsRVStdDevControl.invalid">Min: 5, Max: 50</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Get Item RV Mean</mat-label>
+        <input matInput type="number" placeholder="Get Item RV Mean" [formControl]="getItemRVMeanControl" min="5" max="50">
+        <mat-error *ngIf="getItemRVMeanControl.invalid">Min: 5, Max: 120</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Get Item RV Std. Dev.</mat-label>
+        <input matInput type="number" placeholder="Get Item RV Std. Dev." [formControl]="getItemRVStdDevControl" min="5" max="50">
+        <mat-error *ngIf="getItemRVStdDevControl.invalid">Min: 5, Max: 120</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Scan Item RV Mean</mat-label>
+        <input matInput type="number" placeholder="Scan Item RV Mean" [formControl]="scanItemRVMeanControl" min="5" max="50">
+        <mat-error *ngIf="scanItemRVMeanControl.invalid">Min: 5, Max: 120</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Scan Item RV Std. Dev.</mat-label>
+        <input matInput type="number" placeholder="Scan Item RV Std. Dev." [formControl]="scanItemRVStdDevControl" min="5" max="50">
+        <mat-error *ngIf="scanItemRVStdDevControl.invalid">Min: 5, Max: 120</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary">Reinitialize</button>
+    </form>
+  </div>
+  <div class="viz-wrapper">
+    <div #groceryQueue class="svg-wrapper">
+      <svg></svg>
+    </div>
+    <div class="details">
+      <div class="current-metric">
+        Average Queue Time: <span>{{ this.averageQueueTime ? this.averageQueueTime.toFixed(0) : '-' }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="description">
+    This is a simple discrete event simulation of a grocery store for determining the number of checkout counters needed given the number of
+    customers coming into the store. The simulation consists of one resource, a <b>shopper</b>. The store is initialized with a number of shoppers
+    <b>Initial Shopper Count in the configuration</b>, and they are introduced into the store at a given frequency,
+    <b>shopper enter frequency (simulation seconds) in the configuration</b>. A shopper is initialized with a number of items
+    needed, determined by a random variable chosen from a Gaussian distribution, <b>Shopper Items RV Mean/Std. Dev. in the configuration</b>.
+    The shopper is then moved between states described below...
+    <span class="equation">Store Pool</span>
+    When the shopper enters the store pool (an unbound pool), a random variable (also chosen from a Gaussian distribution) is drawn
+    to determine how long it will take to get each item, <b>Get Item RV Mean/Std. Dev. in the configuration</b>. A new request
+    event is then created for the shopper to enter the checkout queue (the next state).
+    <span class="equation">Checkout Queue</span>
+    When the shopper enters the checkout queue, if they are the only shopper in the queue a new request event is created for
+    the shopper to enter the checkout pool. If there is anyone in front of the shopper no events are created for them until they are
+    at the front of the line.
+    <span class="equation">Checkout Pool</span>
+    The checkout pool is initialized with a number of checkout counter <b>Checkout Count in the configuration</b> and a random variable
+    (also a Gaussian distribution) <b>Scan Item RV Mean/Std. Dev. in the configuration</b> to determine how long each item takes to scan.
+    When a shopper requests to enter this state if there is a free space in the pool the shopper enters the checkout pool and exits the queue
+    and a new event to exit the checkout and store is created using the shopper's item count and the scan item random variable. Otherwise,
+    a new request event is created to attempt to enter the checkout pool after a fixed wait time.
+    <div>
+      <button mat-raised-button color="primary">
+        <a href="https://github.com/brandonthorly/personal/tree/master/src/app/components/viz-components/grocery-queue" target="_blank">GIT</a>
+      </button>
+    </div>
+  </div>
+</div>

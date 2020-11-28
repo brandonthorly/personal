@@ -1,0 +1,29 @@
+@mixin pageDescription() {
+  margin: 0 0 50px;
+
+  > div {
+    font-size: 16px;
+  }
+
+  .equation {
+    display: block;
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    margin: 0 0 20px;
+
+    .button-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      button {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}

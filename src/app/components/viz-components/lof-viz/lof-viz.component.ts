@@ -9,7 +9,6 @@ import {Schedule} from './models/schedule';
   styleUrls: ['./lof-viz.component.scss']
 })
 export class LofVizComponent implements AfterViewInit, OnChanges {
-  @Input() showFullHeight: boolean;
 
   // viz variables
   private _schedule: Schedule;
@@ -72,10 +71,7 @@ export class LofVizComponent implements AfterViewInit, OnChanges {
     this.createStationLines();
     this.createFlightRects();
     this.createFlightLabels();
-
-    if (this.showFullHeight) {
-      this.createStationLabels();
-    }
+    this.createStationLabels();
   }
 
   private getDomain(): [Date, Date] {

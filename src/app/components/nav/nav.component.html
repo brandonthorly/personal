@@ -1,9 +1,40 @@
 <nav>
   <div class="site-title">Brandon Thorly</div>
+  <!--  DESKTOP  -->
   <div class="links">
-    <a href="mailto:brandonthorly@gmail.com?subject=Hello from brandonthorly.com" target="_blank"><span class="material-icons">email</span></a>
+    <a class="mail" href="mailto:brandonthorly@gmail.com?subject=Hello from brandonthorly.com" target="_blank"><span class="material-icons">email</span></a>
     <a class="icon linkedin" href="https://www.linkedin.com/in/brandontbeasley/" target="_blank"></a>
     <a class="icon git" href="https://github.com/brandonthorly" target="_blank"></a>
     <a href="../../../assets/BrandonThorlyResume.pdf" target="_blank">Resume</a>
+  </div>
+  <!--  MOBILE  -->
+  <div class="links mobile">
+    <button mat-button [matMenuTriggerFor]="beforeMenu">
+      <span class="material-icons">menu</span>
+    </button>
+    <mat-menu #beforeMenu="matMenu" xPosition="before">
+      <button mat-menu-item>
+        <a routerLink="/grocery-queue" routerLinkActive="active-link">Grocery Queue Sim</a>
+      </button>
+      <button mat-menu-item>
+        <a routerLink="/competition-sim" routerLinkActive="active-link">Competition Sim</a>
+      </button>
+      <button mat-menu-item>
+        <a routerLink="/line-of-flight" routerLinkActive="active-link">Draggable Schedule</a>
+      </button>
+      <div class="spacer" style="padding-top: 5px; margin-bottom: 5px; height: 1px; border-bottom: 1px solid green;"></div>
+      <button mat-menu-item>
+        <a class="mail" href="mailto:brandonthorly@gmail.com?subject=Hello from brandonthorly.com" target="_blank">Email</a>
+      </button>
+      <button mat-menu-item>
+        <a class="icon linkedin" href="https://www.linkedin.com/in/brandontbeasley/" target="_blank">LinkedIn</a>
+      </button>
+      <button mat-menu-item>
+        <a class="icon git" href="https://github.com/brandonthorly" target="_blank">GitHub</a>
+      </button>
+      <button mat-menu-item>
+        <a href="../../../assets/BrandonThorlyResume.pdf" target="_blank">Resume</a>
+      </button>
+    </mat-menu>
   </div>
 </nav>

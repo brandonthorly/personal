@@ -1,42 +1,21 @@
 <div #compSim class="comp-sim-wrapper">
-  <div class="description" *ngIf="showFullHeight">
-    <div>
-      This is a simulation showing population capacity given a few basic constraints. The game is simple, and can be explained
-      with the equation...
-      <span class="equation">&#916; = (R - (D + c * N)) * N</span>
-      Where...
-      <ul>
-        <li>&#916; is the change in population size</li>
-        <li>R is the avg. replication rate</li>
-        <li>D is the avg. death rate</li>
-        <li>c is what we'll call a crowding coefficient to simulate resource scarcity</li>
-        <li>N is the population size</li>
-      </ul>
-      Given this we should expect population stability when...
-      <span class="equation">N = (R - D) / c</span>
-      You can play with the rates by clicking 'Configure Game'. To make the game a little more interesting you can also
-      allow the population to 'evolve' letting offspring have 'mutations' that will cause their reproduction rates and
-      death rates to randomly differ in either direction from their parent. To adjust the mutations set the 'Max Mutation'
-      which represents the largest difference between child and parent replication and death rates. The color of the
-      'creatures' represents how 'fit' the creature is, where fitness is defined as...
-      <span class="equation">fitness = R - D</span>
-    </div>
-    <div>
+  <div class="description">
+    <div class="button-wrapper">
       <button mat-stroked-button color="primary" (click)="showConfigOptions = !showConfigOptions">Configure Game</button>
       <button mat-stroked-button color="primary" (click)="redrawWorld()">Reset World</button>
       <button mat-raised-button color="primary" [disabled]="gameRunningInterval" (click)="step()">Step</button>
       <button mat-raised-button color="primary" [disabled]="gameRunningInterval" (click)="run()">Run</button>
       <button mat-raised-button color="warn" [disabled]="!gameRunningInterval" (click)="stop()">Stop</button>
     </div>
-    <div class="configuration" [ngClass]="{'show': showConfigOptions}" *ngIf="showFullHeight">
+    <div class="configuration" [ngClass]="{'show': showConfigOptions}">
       <form [formGroup]="configForm" (ngSubmit)="redrawWorld()">
         <mat-form-field>
-          <mat-label>Base Reproduction Rate</mat-label>
+          <mat-label>Reproduction Rate</mat-label>
           <input matInput type="number" placeholder="Base Reproduction Rate" [formControl]="baseReproductionRateControl" min="0.01" max="0.99">
           <mat-error *ngIf="baseReproductionRateControl.invalid">Min: 0.01, Max: 0.99</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Base Death Rate</mat-label>
+          <mat-label>Death Rate</mat-label>
           <input matInput type="number" placeholder="Base Death Rate" [formControl]="baseDeathRateControl" min="0.01" max="0.99">
           <mat-error *ngIf="baseDeathRateControl.invalid">Min: 0.01, Max: 0.99</mat-error>
         </mat-form-field>
@@ -46,7 +25,7 @@
           <mat-error *ngIf="crowdingCoefficientControl.invalid">Min: 0.001, Max: 0.5</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Starting Population Size</mat-label>
+          <mat-label>Population Size</mat-label>
           <input matInput type="number" placeholder="Starting Population Size" [formControl]="startingPopulationSizeControl" min="1" max="100">
           <mat-error *ngIf="startingPopulationSizeControl.invalid">Min: 1, Max: 100</mat-error>
         </mat-form-field>
@@ -82,11 +61,13 @@
       </form>
     </div>
   </div>
-  <div class="svg-wrapper">
-    <svg width="50%" height="80%"></svg>
-    <div class="details" *ngIf="showFullHeight">
+  <div class="viz-wrapper">
+    <div class="svg-wrapper">
+      <svg></svg>
+    </div>
+    <div class="details">
       <div class="current-metric">
-        Current Population Size: <span>{{this._livingCount}}</span>
+        Current Population Size: <span>{{this.livingCount}}</span>
       </div>
       <div class="chart">
         <app-plot-graph [title]="'Population Growth'" [yMax]="expectedN" [dataPoints]="populationSizeLog"></app-plot-graph>
@@ -97,6 +78,34 @@
       <div class="chart">
         <app-plot-graph [title]="'Population Avg. Fitness'" [dataPoints]="avgFitnessLog" [plotColor]="avgFitnessColor"></app-plot-graph>
       </div>
+    </div>
+  </div>
+  <div class="description">
+    <div>
+      This is a simulation showing population capacity given a few basic constraints. The game is simple, and can be explained
+      with the equation...
+      <span class="equation">&#916; = (R - (D + c * N)) * N</span>
+      Where...
+      <ul>
+        <li>&#916; is the change in population size</li>
+        <li>R is the avg. replication rate</li>
+        <li>D is the avg. death rate</li>
+        <li>c is what we'll call a crowding coefficient to simulate resource scarcity</li>
+        <li>N is the population size</li>
+      </ul>
+      Given this we should expect population stability when...
+      <span class="equation">N = (R - D) / c</span>
+      You can play with the rates by clicking 'Configure Game'. To make the game a little more interesting you can also
+      allow the population to 'evolve' letting offspring have 'mutations' that will cause their reproduction rates and
+      death rates to randomly differ in either direction from their parent. To adjust the mutations set the 'Max Mutation'
+      which represents the largest difference between child and parent replication and death rates. The color of the
+      'creatures' represents how 'fit' the creature is, where fitness is defined as...
+      <span class="equation">fitness = R - D</span>
+    </div>
+    <div>
+      <button mat-raised-button color="primary">
+        <a href="https://github.com/brandonthorly/personal/tree/master/src/app/components/viz-components/competition-sim" target="_blank">GIT</a>
+      </button>
     </div>
   </div>
 </div>
