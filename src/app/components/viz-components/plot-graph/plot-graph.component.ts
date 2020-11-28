@@ -43,7 +43,6 @@ export class PlotGraphComponent implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes, ', changes);
     if (this._hostElement) this.generateGraph();
   }
 

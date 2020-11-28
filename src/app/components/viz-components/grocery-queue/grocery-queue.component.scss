@@ -2,56 +2,73 @@
 @import "../../../styles/mixins/dropdown-form.mixin";
 @import "../../../styles/mixins/page-description.mixin";
 
-.gq-viz-wrapper {
-  .description {
-    @include pageDescription;
+.description {
+  @include pageDescription;
 
-    b {
-      color: $primary-green;
-    }
+  b {
+    color: $primary-green;
   }
+}
 
-  .configuration {
-    @include dropDownForm;
-  }
+.configuration {
+  @include dropDownForm;
+}
 
-  .viz-wrapper {
+.viz-wrapper {
+  display: flex;
+
+  .svg-wrapper {
+    flex: 1;
+    position: relative;
     display: flex;
+    flex-direction: row;
+    height: 70vh;
+    margin-bottom: 100px;
 
-    .svg-wrapper {
-      flex: 1;
-      position: relative;
-      display: flex;
-      flex-direction: row;
-      height: 70vh;
-      margin-bottom: 100px;
-
-      svg {
-        width: 100%;
-        height: 100%;
-      }
-
+    svg {
+      width: 100%;
+      height: 100%;
     }
 
-    .details {
-      flex: 1;
+  }
 
-      .current-metric {
-        padding: 20px;
-        font-size: 18px;
-        text-align: center;
+  .details {
+    flex: 1;
 
-        span {
-          font-weight: 600;
-          color: $primary-green;
-        }
+    .current-metric {
+      padding: 20px;
+      font-size: 18px;
+      text-align: center;
+
+      span {
+        font-weight: 600;
+        color: $primary-green;
       }
+    }
 
-      .chart {
-        width: 100%;
-        padding: 0 20px;
-      }
+    .chart {
+      width: 100%;
+      padding: 0 20px;
     }
   }
 }
 
+@media screen and (max-width: 1024px) {
+  .viz-wrapper {
+    flex-direction: column;
+
+    .svg-wrapper {
+      height: 50vh;
+      margin: 20px 0;
+
+      svg {
+        width: 100%;
+      }
+    }
+
+    .details .chart {
+      padding: 0;
+      margin-bottom: 20px;
+    }
+  }
+}

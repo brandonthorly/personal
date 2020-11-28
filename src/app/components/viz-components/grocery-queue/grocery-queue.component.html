@@ -67,6 +67,9 @@
       <div class="current-metric">
         Average Queue Time: <span>{{ this.averageQueueTime ? this.averageQueueTime.toFixed(0) : '-' }}</span>
       </div>
+      <div class="chart">
+        <app-bin-data-bar-graph [title]="'Queue Time Distribution (occurrences x seconds)'" [values]="queueTimes"></app-bin-data-bar-graph>
+      </div>
     </div>
   </div>
   <div class="description">
@@ -83,7 +86,7 @@
     <span class="equation">Checkout Queue</span>
     When the shopper enters the checkout queue, if they are the only shopper in the queue a new request event is created for
     the shopper to enter the checkout pool. If there is anyone in front of the shopper no events are created for them until they are
-    at the front of the line.
+    at the front of the line. NOTE: They should probably be standing 6 feet apart :(
     <span class="equation">Checkout Pool</span>
     The checkout pool is initialized with a number of checkout counter <b>Checkout Count in the configuration</b> and a random variable
     (also a Gaussian distribution) <b>Scan Item RV Mean/Std. Dev. in the configuration</b> to determine how long each item takes to scan.
