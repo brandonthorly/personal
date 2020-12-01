@@ -117,7 +117,10 @@ export class DistributionCurveComponent implements AfterViewInit, OnChanges {
       .y((d: any) => this._yScale(d.p))
       ;
 
-    const pathSelector = `dist-line-${this.title.split(' ').join('-')}`;
+    const pathSelector = 'dist-line';
+
+    const existing = this._plotArea.select(`.${pathSelector}`);
+    if (existing) existing.remove();
 
     this._plotArea.append('path')
           .datum(this._data)
@@ -128,6 +131,7 @@ export class DistributionCurveComponent implements AfterViewInit, OnChanges {
           .attr('stroke-width', 1)
           .attr('stroke-linejoin', 'round')
           .attr('stroke-linecap', 'round')
+          .attr('opacity', '0.5')
           ;
   }
 

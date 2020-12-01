@@ -56,6 +56,9 @@ export class GroceryQueueComponent implements AfterViewInit {
   // logs
   public averageQueueTime: number;
   public queueTimes = [];
+  public shopperItemsDist = [];
+  public getItemsDist = [];
+  public scanItemsDist = [];
 
   public showConfigOptions = false;
   public running = false;

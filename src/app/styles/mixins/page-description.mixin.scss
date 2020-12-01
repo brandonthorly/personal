@@ -3,6 +3,10 @@
 
   > div {
     font-size: 16px;
+
+    &.git-wrapper {
+      margin-top: 20px;
+    }
   }
 
   .equation {
