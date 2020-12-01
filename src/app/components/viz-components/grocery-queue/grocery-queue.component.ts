@@ -121,27 +121,27 @@ export class GroceryQueueComponent implements AfterViewInit {
     return this.configForm.get('shopperEntranceFrequency');
   }
 
-  private get shopperItemsRVMean(): AbstractControl {
+  public get shopperItemsRVMean(): AbstractControl {
     return this.configForm.get('shopperItemsRVMean');
   }
 
-  private get shopperItemsRVStdDev(): AbstractControl {
+  public get shopperItemsRVStdDev(): AbstractControl {
     return this.configForm.get('shopperItemsRVStdDev');
   }
 
-  private get getItemRVMean(): AbstractControl {
+  public get getItemRVMean(): AbstractControl {
     return this.configForm.get('getItemRVMean');
   }
 
-  private get getItemRVStdDev(): AbstractControl {
+  public get getItemRVStdDev(): AbstractControl {
     return this.configForm.get('getItemRVStdDev');
   }
 
-  private get scanItemRVMean(): AbstractControl {
+  public get scanItemRVMean(): AbstractControl {
     return this.configForm.get('scanItemRVMean');
   }
 
-  private get scanItemRVStdDev(): AbstractControl {
+  public get scanItemRVStdDev(): AbstractControl {
     return this.configForm.get('scanItemRVStdDev');
   }
 

@@ -17,6 +17,7 @@ import {MaterialModules} from './material.modules';
 import { AntiobioticResistanceComponent } from './components/viz-components/antiobiotic-resistance/antiobiotic-resistance.component';
 import { GroceryQueueComponent } from './components/viz-components/grocery-queue/grocery-queue.component';
 import { BinDataBarGraphComponent } from './components/viz-components/bin-data-bar-graph/bin-data-bar-graph.component';
+import { DistributionCurveComponent } from './components/viz-components/distribution-curve/distribution-curve.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { BinDataBarGraphComponent } from './components/viz-components/bin-data-b
     AntiobioticResistanceComponent,
     GroceryQueueComponent,
     BinDataBarGraphComponent,
+    DistributionCurveComponent,
   ],
   imports: [
     BrowserModule,

@@ -68,7 +68,16 @@
         Average Queue Time: <span>{{ this.averageQueueTime ? this.averageQueueTime.toFixed(0) : '-' }}</span>
       </div>
       <div class="chart">
-        <app-bin-data-bar-graph [title]="'Queue Time Distribution (occurrences x seconds)'" [values]="queueTimes"></app-bin-data-bar-graph>
+        <app-bin-data-bar-graph [title]="'Queue Time Histogram (seconds)'" [values]="queueTimes"></app-bin-data-bar-graph>
+      </div>
+      <div class="chart">
+        <app-distribution-curve [title]="'Shopper Items RV Dist (items)'" [params]="{ mean: shopperItemsRVMean.value, stddev: shopperItemsRVStdDev.value }"></app-distribution-curve>
+      </div>
+      <div class="chart">
+        <app-distribution-curve [title]="'Get Items RV Dist (sec. per item)'" [params]="{ mean: getItemRVMean.value, stddev: getItemRVStdDev.value }"></app-distribution-curve>
+      </div>
+      <div class="chart">
+        <app-distribution-curve [title]="'Scan Items RV Dist (sec. per item)'" [params]="{ mean: scanItemRVMean.value, stddev: scanItemRVStdDev.value }"></app-distribution-curve>
       </div>
     </div>
   </div>
