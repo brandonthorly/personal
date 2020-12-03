@@ -1,9 +1,8 @@
 <div class="gq-viz-wrapper">
-  <div class="description">
+  <div class="description top">
     <div class="button-wrapper">
       <button mat-stroked-button color="primary" (click)="showConfigOptions = !showConfigOptions">Configure Game</button>
       <button mat-stroked-button color="primary" (click)="reInitStore()">Reset World</button>
-<!--      <button mat-raised-button color="primary" [disabled]="running" (click)="step()">Step</button>-->
       <button mat-raised-button color="primary" [disabled]="running" (click)="run()">Run</button>
       <button mat-raised-button color="warn" [disabled]="!running" (click)="stop()">Stop</button>
     </div>
@@ -25,37 +24,27 @@
         <input matInput type="number" placeholder="Shopper Enter Frequency" [formControl]="shopperEntranceFrequencyControl" min="30" max="1800">
         <mat-error *ngIf="shopperEntranceFrequencyControl.invalid">Min: 30s, Max: 1800s</mat-error>
       </mat-form-field>
-      <mat-form-field>
-        <mat-label>Shopper Items RV Mean</mat-label>
-        <input matInput type="number" placeholder="Shopper Items RV Mean" [formControl]="shopperItemsRVMeanControl" min="5" max="50">
-        <mat-error *ngIf="shopperItemsRVMeanControl.invalid">Min: 5, Max: 50</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Shopper Items RV Std. Dev.</mat-label>
-        <input matInput type="number" placeholder="Shopper Items RV Std. Dev." [formControl]="shopperItemsRVStdDevControl" min="5" max="50">
-        <mat-error *ngIf="shopperItemsRVStdDevControl.invalid">Min: 5, Max: 50</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Get Item RV Mean</mat-label>
-        <input matInput type="number" placeholder="Get Item RV Mean" [formControl]="getItemRVMeanControl" min="5" max="50">
-        <mat-error *ngIf="getItemRVMeanControl.invalid">Min: 5, Max: 120</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Get Item RV Std. Dev.</mat-label>
-        <input matInput type="number" placeholder="Get Item RV Std. Dev." [formControl]="getItemRVStdDevControl" min="5" max="50">
-        <mat-error *ngIf="getItemRVStdDevControl.invalid">Min: 5, Max: 120</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Scan Item RV Mean</mat-label>
-        <input matInput type="number" placeholder="Scan Item RV Mean" [formControl]="scanItemRVMeanControl" min="5" max="50">
-        <mat-error *ngIf="scanItemRVMeanControl.invalid">Min: 5, Max: 120</mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Scan Item RV Std. Dev.</mat-label>
-        <input matInput type="number" placeholder="Scan Item RV Std. Dev." [formControl]="scanItemRVStdDevControl" min="5" max="50">
-        <mat-error *ngIf="scanItemRVStdDevControl.invalid">Min: 5, Max: 120</mat-error>
-      </mat-form-field>
-
+      <div class="rv-wrapper">
+        <mat-label>Shopper Items RV</mat-label>
+        <button mat-raised-button color="secondary" (click)="setRv('Shopper Items')">
+          {{this.shopperItemsRv.densityFn}}({{this.shopperItemsRv.fnParams.alpha}},{{this.shopperItemsRv.fnParams.beta}}){{this.shopperItemsRv.fnParams.shift ? ' + ' + this.shopperItemsRv.fnParams.shift : '' }}
+        </button>
+        <mat-error *ngIf="!shopperItemsRv">RV Required</mat-error>
+      </div>
+      <div class="rv-wrapper">
+        <mat-label>Get Item RV</mat-label>
+        <button mat-raised-button color="secondary" (click)="setRv('Get Item')">
+          {{this.shopperItemsRv.densityFn}}({{this.getItemRv.fnParams.alpha}},{{this.getItemRv.fnParams.beta}}){{this.getItemRv.fnParams.shift ? ' + ' + this.getItemRv.fnParams.shift : '' }}
+        </button>
+        <mat-error *ngIf="!getItemRv">RV Required</mat-error>
+      </div>
+      <div class="rv-wrapper">
+        <mat-label>Scan Item RV</mat-label>
+        <button mat-raised-button color="secondary" (click)="setRv('Scan Item')">
+          {{this.scanItemRv.densityFn}}({{this.scanItemRv.fnParams.alpha}},{{this.scanItemRv.fnParams.beta}}){{this.scanItemRv.fnParams.shift ? ' + ' + this.scanItemRv.fnParams.shift : '' }}
+        </button>
+        <mat-error *ngIf="!scanItemRv">RV Required</mat-error>
+      </div>
       <button mat-raised-button color="primary">Reinitialize</button>
     </form>
   </div>
@@ -69,15 +58,6 @@
       </div>
       <div class="chart">
         <app-bin-data-bar-graph [title]="'Queue Time Histogram (seconds)'" [values]="queueTimes"></app-bin-data-bar-graph>
-      </div>
-      <div class="chart">
-        <app-distribution-curve [title]="'Shopper Items RV Dist (items)'" [params]="{ mean: shopperItemsRVMean.value, stddev: shopperItemsRVStdDev.value }"></app-distribution-curve>
-      </div>
-      <div class="chart">
-        <app-distribution-curve [title]="'Get Items RV Dist (sec. per item)'" [params]="{ mean: getItemRVMean.value, stddev: getItemRVStdDev.value }"></app-distribution-curve>
-      </div>
-      <div class="chart">
-        <app-distribution-curve [title]="'Scan Items RV Dist (sec. per item)'" [params]="{ mean: scanItemRVMean.value, stddev: scanItemRVStdDev.value }"></app-distribution-curve>
       </div>
     </div>
   </div>

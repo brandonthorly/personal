@@ -1,7 +1,7 @@
-import {gaussianRV} from '../../shared/gaussian-rv';
 import {uuid} from '../../shared/simple-uuid';
-import {IRVParams} from './rv-params.interface';
+import {EDensityFn} from '../../shared/density-fn.enum';
 import {ESimState} from './enums/sim-states.enum';
+import {RandomVariable} from './random-variable';
 
 export class Shopper {
   private _id: string;
@@ -14,10 +14,10 @@ export class Shopper {
   private _enterCheckoutTime: number;
   private _exitCheckoutTime: number;
 
-  constructor(shopperItemsRVParams?: IRVParams) {
-    const rvParams = shopperItemsRVParams || { mean: 15, stddev: 20 };
+  constructor(rv?: RandomVariable) {
+    rv = rv || new RandomVariable(EDensityFn.NORMAL, { alpha: 15, beta: 20 });
     this._id = uuid();
-    this._itemsNeeded = Math.floor(gaussianRV(rvParams.mean, rvParams.stddev));
+    this._itemsNeeded = rv.draw();
     this._state = ESimState.INIT;
   }
 

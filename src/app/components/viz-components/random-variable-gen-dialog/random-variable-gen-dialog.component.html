@@ -1,0 +1,31 @@
+<div class="header">
+  <div class="title">Define Random Variable for {{ data.title }}</div>
+  <span class="material-icons" (click)="closeDialog()">close</span>
+</div>
+<div class="rv-def-wrapper">
+  <mat-form-field>
+    <mat-label>Density Function</mat-label>
+    <mat-select [(ngModel)]="density" (blur)="showErrors=false">
+      <mat-option *ngFor="let fn of densityFnList" [value]="fn">{{fn}}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="showErrors && !this.density">Density Function required</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{getAlphaLabel()}}</mat-label>
+    <input matInput type="number" placeholder="{{getAlphaLabel()}}" [(ngModel)]="alpha" (blur)="showErrors=false">
+    <mat-error *ngIf="showErrors && !this.alpha">{{getAlphaLabel()}} required</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{getBetaLabel()}}</mat-label>
+    <input matInput type="number" placeholder="{{getBetaLabel()}}" [(ngModel)]="beta" (blur)="showErrors=false">
+    <mat-error *ngIf="showErrors && !this.beta">{{getBetaLabel()}} required</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Shift</mat-label>
+    <input matInput type="number" placeholder="Shift" [(ngModel)]="shift">
+  </mat-form-field>
+  <div class="chart">
+    <app-distribution-curve [title]="data.title" [densityFn]="density" [params]="{ alpha: alpha, beta: beta, shift: shift }"></app-distribution-curve>
+  </div>
+  <button mat-raised-button color="primary" (click)="saveRV()">Save</button>
+</div>

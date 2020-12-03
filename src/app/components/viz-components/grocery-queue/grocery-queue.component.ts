@@ -1,13 +1,17 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
 import {BaseType, Selection} from 'd3-selection';
 import {Transition} from 'd3-transition';
 import {Subscription} from 'rxjs';
+import {RandomVariableGenDialogComponent} from '../random-variable-gen-dialog/random-variable-gen-dialog.component';
+import {EDensityFn} from '../shared/density-fn.enum';
 import {getRandomInRange} from '../shared/random-in-range';
 import {getRandomIntInRange} from '../shared/random-int-in-range';
-import {Shopper} from './models/shopper';
 import {ESimState} from './models/enums/sim-states.enum';
+import {RandomVariable} from './models/random-variable';
+import {Shopper} from './models/shopper';
 import {Simulator} from './models/simulator';
 
 @Component({
@@ -45,47 +49,30 @@ export class GroceryQueueComponent implements AfterViewInit {
   public initialShopperCountControl: FormControl;
   public checkoutCountControl: FormControl;
   public shopperEntranceFrequencyControl: FormControl;
-  public shopperItemsRVMeanControl: FormControl;
-  public shopperItemsRVStdDevControl: FormControl;
-  public getItemRVMeanControl: FormControl;
-  public getItemRVStdDevControl: FormControl;
-  public scanItemRVMeanControl: FormControl;
-  public scanItemRVStdDevControl: FormControl;
+  public shopperItemsRv = new RandomVariable(EDensityFn.NORMAL, { alpha: 30, beta: 7 });
+  public getItemRv = new RandomVariable(EDensityFn.NORMAL, { alpha: 30, beta: 5 });
+  public scanItemRv = new RandomVariable(EDensityFn.NORMAL, { alpha: 15, beta: 3 });
   public configForm: FormGroup;
 
   // logs
   public averageQueueTime: number;
   public queueTimes = [];
-  public shopperItemsDist = [];
-  public getItemsDist = [];
-  public scanItemsDist = [];
 
   public showConfigOptions = false;
   public running = false;
 
   @ViewChild('groceryQueue') groceryQueueElemRef: ElementRef;
 
-  constructor(fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private dialog: MatDialog) {
     this.initialShopperCountControl = new FormControl(10, [Validators.min(1), Validators.max(30)]);
     this.checkoutCountControl = new FormControl(3, [Validators.min(1), Validators.max(10)]);
     this.shopperEntranceFrequencyControl = new FormControl(120, [Validators.min(30), Validators.max(1800)]);
-    this.shopperItemsRVMeanControl = new FormControl(15, [Validators.min(5), Validators.max(50)]);
-    this.shopperItemsRVStdDevControl = new FormControl(20, [Validators.min(5), Validators.max(50)]);
-    this.getItemRVMeanControl = new FormControl(30, [Validators.min(5), Validators.max(50)]);
-    this.getItemRVStdDevControl = new FormControl(20, [Validators.min(5), Validators.max(50)]);
-    this.scanItemRVMeanControl = new FormControl(15, [Validators.min(2), Validators.max(30)]);
-    this.scanItemRVStdDevControl = new FormControl(10, [Validators.min(2), Validators.max(30)]);
 
     this.configForm = fb.group({
       initialShopperCount: this.initialShopperCountControl,
       checkoutCount: this.checkoutCountControl,
       shopperEntranceFrequency: this.shopperEntranceFrequencyControl,
-      shopperItemsRVMean: this.shopperItemsRVMeanControl,
-      shopperItemsRVStdDev: this.shopperItemsRVStdDevControl,
-      getItemRVMean: this.getItemRVMeanControl,
-      getItemRVStdDev: this.getItemRVStdDevControl,
-      scanItemRVMean: this.scanItemRVMeanControl,
-      scanItemRVStdDev: this.scanItemRVStdDevControl,
     });
   }
 
@@ -112,6 +99,52 @@ export class GroceryQueueComponent implements AfterViewInit {
     this.createStore();
   }
 
+  public setRv(rvName: string, ): void {
+    let randomVariable: RandomVariable;
+
+    switch (rvName) {
+      case 'Shopper Items':
+        randomVariable = this.shopperItemsRv;
+        break;
+
+      case 'Get Item':
+        randomVariable = this.getItemRv;
+        break;
+
+      case 'Scan Item':
+        randomVariable = this.scanItemRv;
+        break;
+
+      default:
+        console.error(`Attempting to set RV for unknown type, ${rvName}`)
+    }
+
+    this.dialog.open(RandomVariableGenDialogComponent, {
+      data: { current: randomVariable, title: rvName },
+      width: '50%',
+      height: 'auto'
+    }).afterClosed().subscribe((rv: RandomVariable) => {
+      if (rv) {
+        switch (rvName) {
+          case 'Shopper Items':
+            this.shopperItemsRv = rv;
+            break;
+
+          case 'Get Item':
+            this.getItemRv = rv;
+            break;
+
+          case 'Scan Item':
+            this.scanItemRv = rv;
+            break;
+
+          default:
+            console.error(`Attempting to set RV for unknown type, ${rvName}`)
+        }
+      }
+    });
+  }
+
   private get initialShopperCount(): AbstractControl {
     return this.configForm.get('initialShopperCount');
   }
@@ -124,42 +157,14 @@ export class GroceryQueueComponent implements AfterViewInit {
     return this.configForm.get('shopperEntranceFrequency');
   }
 
-  public get shopperItemsRVMean(): AbstractControl {
-    return this.configForm.get('shopperItemsRVMean');
-  }
-
-  public get shopperItemsRVStdDev(): AbstractControl {
-    return this.configForm.get('shopperItemsRVStdDev');
-  }
-
-  public get getItemRVMean(): AbstractControl {
-    return this.configForm.get('getItemRVMean');
-  }
-
-  public get getItemRVStdDev(): AbstractControl {
-    return this.configForm.get('getItemRVStdDev');
-  }
-
-  public get scanItemRVMean(): AbstractControl {
-    return this.configForm.get('scanItemRVMean');
-  }
-
-  public get scanItemRVStdDev(): AbstractControl {
-    return this.configForm.get('scanItemRVStdDev');
-  }
-
   private initSim(): void {
     if (this._simSubscription) {
       this._simSubscription.unsubscribe();
     }
 
-    const shopperItemsRVParams = { mean: this.shopperItemsRVMean.value, stddev: this.shopperItemsRVStdDev.value };
-    const getItemRVParams = { mean: this.getItemRVMean.value, stddev: this.getItemRVStdDev.value };
-    const scanItemRVParams = { mean: this.scanItemRVMean.value, stddev: this.scanItemRVStdDev.value };
-
     this._sim = new Simulator(
       this.checkoutCount.value, this.shopperEntranceFrequency.value, this.initialShopperCount.value,
-      shopperItemsRVParams, getItemRVParams, scanItemRVParams
+      this.shopperItemsRv, this.getItemRv, this.scanItemRv
     );
 
     this._sim.listen().subscribe(() => {

@@ -1,8 +1,9 @@
 import {AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import * as d3 from 'd3';
-import jStat from 'jstat';
 import {BaseType, Selection} from 'd3-selection';
+import jStat from 'jstat';
 import {IRVParams} from '../grocery-queue/models/rv-params.interface';
+import {EDensityFn} from '../shared/density-fn.enum';
 
 interface IDistData {
   q: number;
@@ -16,6 +17,7 @@ interface IDistData {
 })
 export class DistributionCurveComponent implements AfterViewInit, OnChanges {
   @Input() title: string;
+  @Input() densityFn: EDensityFn;
   @Input() params: IRVParams;
 
   // viz variables
@@ -55,10 +57,19 @@ export class DistributionCurveComponent implements AfterViewInit, OnChanges {
 
   private prepData(): void {
       this._data = [];
-      for (let q = this.params.mean - 4 * this.params.stddev; q < this.params.mean + 4 * this.params.stddev; q++) {
-          const p = jStat.normal.pdf(q, this.params.mean, this.params.stddev);
-          this._data.push({q, p});
+
+      if (this.densityFn === EDensityFn.NORMAL) {
+        for (let q = this.params.alpha - 4 * this.params.beta; q < this.params.alpha + 4 * this.params.beta; q++) {
+          this._data.push({q, p: jStat.normal.pdf(q, this.params.alpha, this.params.beta)});
+        }
+      } else if (this.densityFn === EDensityFn.GAMMA) {
+        const shift = this.params.shift || 0;
+        const approximateMax = 30 + shift;
+        for (let q = 0; q < approximateMax; q++) {
+          this._data.push({q, p: jStat.gamma.pdf(q - shift, this.params.alpha, this.params.beta / (this.params.beta + 1))});
+        }
       }
+
   }
 
   private prepSvg(): void {
@@ -113,6 +124,7 @@ export class DistributionCurveComponent implements AfterViewInit, OnChanges {
 
   private createLine(): void {
     const line = d3.line()
+      .curve(d3.curveBasis)
       .x((d: any) => this._xScale(d.q))
       .y((d: any) => this._yScale(d.p))
       ;

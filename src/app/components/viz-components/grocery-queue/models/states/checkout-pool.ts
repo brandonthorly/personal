@@ -1,9 +1,8 @@
-import {gaussianRV} from '../../../shared/gaussian-rv';
+import {EDensityFn} from '../../../shared/density-fn.enum';
 import {EEventType} from '../enums/event-type.enum';
+import {ESimState} from '../enums/sim-states.enum';
 import {IEvent} from '../event.interface';
 import {RandomVariable} from '../random-variable';
-import {ESimState} from '../enums/sim-states.enum';
-import {IRVParams} from '../rv-params.interface';
 
 export class CheckoutPool {
   private _rv: RandomVariable;
@@ -12,9 +11,8 @@ export class CheckoutPool {
   private _waitTime = 30;
   private _payTime = 60;
 
-  constructor(checkoutCount: number, rvParams: IRVParams) {
-    const params = rvParams || { mean: 15, stddev: 10};
-    this._rv = new RandomVariable(gaussianRV, params);
+  constructor(checkoutCount: number, rv: RandomVariable) {
+    this._rv = rv || new RandomVariable(EDensityFn.NORMAL, { alpha: 15, beta: 10});
     this._checkoutCount = checkoutCount;
     this._pool = Array(this._checkoutCount);
   }

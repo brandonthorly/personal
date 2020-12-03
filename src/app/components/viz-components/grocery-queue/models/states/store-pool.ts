@@ -1,18 +1,16 @@
-import {gaussianRV} from '../../../shared/gaussian-rv';
+import {EDensityFn} from '../../../shared/density-fn.enum';
 import {EEventType} from '../enums/event-type.enum';
+import {ESimState} from '../enums/sim-states.enum';
 import {IEvent} from '../event.interface';
 import {RandomVariable} from '../random-variable';
-import {IRVParams} from '../rv-params.interface';
 import {Shopper} from '../shopper';
-import {ESimState} from '../enums/sim-states.enum';
 
 export class StorePool {
   private _rv: RandomVariable;
   private _shoppers: { [key: string]: Shopper };
 
-  constructor(rvParams?: IRVParams) {
-    const params = rvParams || { mean: 30, stddev: 20};
-    this._rv = new RandomVariable(gaussianRV, params);
+  constructor(rv?: RandomVariable) {
+    this._rv = rv || new RandomVariable(EDensityFn.NORMAL, { alpha: 30, beta: 20});
     this._shoppers = {};
   }
 

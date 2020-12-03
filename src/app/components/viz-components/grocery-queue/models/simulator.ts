@@ -1,4 +1,5 @@
 import {Observable, Subject} from 'rxjs';
+import {RandomVariable} from './random-variable';
 import {IRVParams} from './rv-params.interface';
 import {CheckoutPool} from './states/checkout-pool';
 import {CheckoutQueue} from './states/checkout-queue';
@@ -15,7 +16,7 @@ export class Simulator {
   private _checkoutQueue: CheckoutQueue;
   private _checkoutPool: CheckoutPool;
   private _shoppers: Shopper[];
-  private _shopperItemsRVParams: IRVParams;
+  private _shopperItemsRV: RandomVariable;
 
   private _entranceFrequency = 60 * 5;
   private _eventQueue: IEvent[];
@@ -24,13 +25,13 @@ export class Simulator {
 
 
   constructor(checkoutCount: number, entranceFrequency: number, initialShopperCount: number,
-              shopperItemsRVParams: IRVParams, getItemRVParams: IRVParams, scanItemRVParams: IRVParams) {
+              shopperItemsRV: RandomVariable, getItemRV: RandomVariable, scanItemRV: RandomVariable) {
     this._entranceFrequency = entranceFrequency;
-    this._shopperItemsRVParams = shopperItemsRVParams;
+    this._shopperItemsRV = shopperItemsRV;
 
-    this._store = new StorePool(getItemRVParams);
+    this._store = new StorePool(getItemRV);
     this._checkoutQueue = new CheckoutQueue();
-    this._checkoutPool = new CheckoutPool(checkoutCount, scanItemRVParams);
+    this._checkoutPool = new CheckoutPool(checkoutCount, scanItemRV);
     this._eventQueue = [];
     this._shoppers = [];
 
@@ -121,7 +122,7 @@ export class Simulator {
   }
 
   private addNewShopper(): void {
-    const shopper = new Shopper(this._shopperItemsRVParams);
+    const shopper = new Shopper(this._shopperItemsRV);
     this._shoppers.push(shopper);
 
     this._eventQueue.push(

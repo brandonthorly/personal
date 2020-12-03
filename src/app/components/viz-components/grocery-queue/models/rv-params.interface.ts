@@ -1,4 +1,5 @@
 export interface IRVParams {
-  mean: number;
-  stddev: number;
+  alpha: number;
+  beta: number;
+  shift?: number;
 }

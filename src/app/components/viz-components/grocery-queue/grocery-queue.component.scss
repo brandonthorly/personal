@@ -5,6 +5,10 @@
 .description {
   @include pageDescription;
 
+  &.top {
+    margin-bottom: 20px;
+  }
+
   b {
     color: $primary-green;
   }
@@ -12,6 +16,18 @@
 
 .configuration {
   @include dropDownForm;
+
+  form {
+    .rv-wrapper {
+      display: inline-block;
+
+      mat-label {
+        display: block;
+        color: rgba(0,0,0,.54);
+        font-size: 8px;
+      }
+    }
+  }
 }
 
 .viz-wrapper {
