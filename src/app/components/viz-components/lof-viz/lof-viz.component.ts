@@ -1,5 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import * as d3 from 'd3';
+import {FlightDetailsDialogComponent, IFlightAction} from '../flight-details-dialog/flight-details-dialog.component';
 import {Flight} from './models/flight';
 import {Schedule} from './models/schedule';
 
@@ -9,6 +11,7 @@ import {Schedule} from './models/schedule';
   styleUrls: ['./lof-viz.component.scss']
 })
 export class LofVizComponent implements AfterViewInit, OnChanges {
+  private _initialized = false;
 
   // viz variables
   private _schedule: Schedule;
@@ -33,17 +36,15 @@ export class LofVizComponent implements AfterViewInit, OnChanges {
 
   @ViewChild('scheduleElem') scheduleElemRef: ElementRef;
 
-  // @HostListener('window:resize', [])
-  // @debounce()
-  // onResize() {
-  //   if (this.initialized) {
-  //     this.prepCanvas();
-  //     this.xScale.range([0, this.scheduleWidth]);
-  //     this.createViz();
-  //   }
-  // }
+  @HostListener('window:resize', [])
+  private onResize(): void {
+    if (this._initialized) {
+      this.createViz();
+    }
+  }
 
-  constructor() {
+  constructor(private matDialog: MatDialog) {
+    this._schedule = new Schedule();
     this.prepData();
   }
 
@@ -57,9 +58,7 @@ export class LofVizComponent implements AfterViewInit, OnChanges {
   }
 
   private prepData(): void {
-    this._schedule = new Schedule();
     this._flattenedSchedule = [].concat(...Object.values(this._schedule.lofs));
-
   }
 
   private createViz(): void {
@@ -141,8 +140,20 @@ export class LofVizComponent implements AfterViewInit, OnChanges {
     flightRects.join(
       enter => enter
         .append('rect')
-          .on('click', (d: any, i: number, nodes: any) => {
-            console.log('click, ', d, i, nodes);
+          .on('click', (e: MouseEvent, d: Flight) => {
+            if (d.cancelled) return;
+
+            this.matDialog.open(FlightDetailsDialogComponent, {
+              height: 'auto',
+              panelClass: 'personal-site-modal',
+              data: d
+            }).afterClosed().subscribe((flightAction: IFlightAction) => {
+              if (flightAction.cancel) {
+                this.cancelFlight(d);
+              } else if (flightAction.retime) {
+                this.retimeFlight(d, flightAction.retime);
+              }
+            });
           })
           .attr('class', flightRectSelector)
           .style('cursor', 'pointer')
@@ -154,12 +165,13 @@ export class LofVizComponent implements AfterViewInit, OnChanges {
           .attr('ry', 2)
           .attr('stroke', '#000000')
           .attr('stroke-width', 1)
-          .attr('fill', '#66BB6A'),
+          .attr('fill', (d: Flight) => d.cancelled ? '#E53935' : '#66BB6A'),
       update => update
         .call(u => u.transition(this._transition)
           .attr('x', (d: Flight) => this._xScale(d.outGMT))
           .attr('y', (d: Flight) => this._xAxisContainerOffset + 20 + d.acId * this._lofHeight)
           .attr('width', (d: Flight) => this._xScale(d.inGMT) - this._xScale(d.outGMT))
+          .attr('fill', (d: Flight) => d.cancelled ? '#E53935' : '#66BB6A'),
         ),
       exit => exit.remove()
     );
@@ -203,6 +215,21 @@ export class LofVizComponent implements AfterViewInit, OnChanges {
     flightLabels.join(
       enter => enter
         .append('text')
+          .on('click', (e: MouseEvent, d: Flight) => {
+            if (d.cancelled) return;
+
+            this.matDialog.open(FlightDetailsDialogComponent, {
+              height: 'auto',
+              panelClass: 'personal-site-modal',
+              data: d
+            }).afterClosed().subscribe((flightAction: IFlightAction) => {
+              if (flightAction.cancel) {
+                this.cancelFlight(d);
+              } else if (flightAction.retime) {
+                this.retimeFlight(d, flightAction.retime);
+              }
+            });
+          })
           .attr('class', flightLabelSelector)
           .style('text-anchor', 'middle')
           .style('font-family', '"Arial Narrow", Arial, Helvetica, sans-serif')
@@ -270,14 +297,54 @@ export class LofVizComponent implements AfterViewInit, OnChanges {
     );
   }
 
+  private retimeFlight(flight: Flight, retimeMinutes: number): void {
+    const lof = this._schedule.lofs[flight.acId];
+    const f = lof.find(fl => fl.flightId === flight.flightId);
 
-  makeDraggable(): void {
+    if (f) {
+      const newOut = this.addMinutes(f.outGMT, retimeMinutes);
+      const newIn = this.addMinutes(f.inGMT, retimeMinutes);
+
+      f.outGMT = newOut >= f.previousInGMT ? newOut : f.previousInGMT;
+      f.inGMT = newIn <= f.nextOutGMT ? newIn : f.nextOutGMT;
+    }
+
+    this.prepData();
+    this.createViz();
+  }
+
+  private cancelFlight(flight: Flight): void {
+    const lof = this._schedule.lofs[flight.acId];
+
+    let cancelFlight = false;
+
+    for (const f of lof) {
+      if (f.flightId === flight.flightId) {
+        cancelFlight = true;
+      } else if (cancelFlight && f.origin === flight.origin) {
+        cancelFlight = false;
+      }
+
+      f.cancelled = cancelFlight;
+    }
+
+    this.prepData();
+    this.createViz();
+  }
+
+  private addMinutes(dt: Date, minutes: number): Date {
+    const newDate = new Date(dt);
+
+    return new Date(newDate.setMinutes(newDate.getMinutes() + minutes));
+  }
+
+  private makeDraggable(): void {
     this._svg.call(
       d3.drag().on('drag', this.drag.bind(this))
     );
   }
 
-  drag(event): void {
+  private drag(event): void {
     this._xTranslated += event.dx;
 
     if (this._xTranslated > 0 || this._xTranslated < -(this._plotArea.node().getBBox().width - this._scheduleWidth)) return;

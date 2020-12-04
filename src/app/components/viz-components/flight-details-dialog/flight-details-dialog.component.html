@@ -1,0 +1,39 @@
+<div class="header">
+  <div class="title">{{ flight.flightId }}</div>
+  <span class="material-icons" (click)="closeDialog()">close</span>
+</div>
+<table class="table">
+  <tbody>
+    <tr>
+      <td class="label">Origin</td>
+      <td>{{ flight.origin }}</td>
+    </tr>
+    <tr>
+      <td class="label">Destination</td>
+      <td>{{ flight.destination }}</td>
+    </tr>
+    <tr>
+      <td class="label">Departure Time </td>
+      <td>{{ flight.outGMT | date: 'MM/dd HH:mm' }}</td>
+    </tr>
+    <tr>
+      <td class="label">Arrival Time</td>
+      <td>{{ flight.inGMT | date: 'MM/dd HH:mm' }}</td>
+    </tr>
+    <tr>
+      <td class="label">Aircraft</td>
+      <td>{{ flight.acId }}</td>
+    </tr>
+  </tbody>
+</table>
+<div class="footer">
+  <div>
+    <mat-form-field>
+      <input matInput type="number" placeholder="Retime minutes" [(ngModel)]="retime" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="retimeFlight()">Retime</button>
+  </div>
+  <div>
+    <button mat-raised-button color="danger" (click)="cancelFlight()">Cancel</button>
+  </div>
+</div>

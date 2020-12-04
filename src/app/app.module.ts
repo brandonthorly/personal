@@ -19,6 +19,7 @@ import {LofVizComponent} from './components/viz-components/lof-viz/lof-viz.compo
 import {PlotGraphComponent} from './components/viz-components/plot-graph/plot-graph.component';
 import {RandomVariableGenDialogComponent} from './components/viz-components/random-variable-gen-dialog/random-variable-gen-dialog.component';
 import {MaterialModules} from './material.modules';
+import { FlightDetailsDialogComponent } from './components/viz-components/flight-details-dialog/flight-details-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {MaterialModules} from './material.modules';
     BinDataBarGraphComponent,
     DistributionCurveComponent,
     RandomVariableGenDialogComponent,
+    FlightDetailsDialogComponent,
   ],
   entryComponents: [
     RandomVariableGenDialogComponent,

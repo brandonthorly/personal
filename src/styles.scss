@@ -11,13 +11,20 @@ a { text-decoration: none; color: #000000; }
 
 // MATERIAL OVERIDES
 
-.rv-gen-modal {
+.personal-site-modal {
   width: 50%;
 }
 
-.mat-raised-button.mat-primary {
-  background-color: $primary-green;
+.mat-raised-button {
   color: #FFFFFF;
+
+  &.mat-primary {
+    background-color: $primary-green;
+  }
+
+  &.mat-danger {
+    background-color: $danger-red;
+  }
 
   a {
     color: #FFFFFF;
@@ -125,7 +132,7 @@ button {
 }
 
 @media screen and (max-width: 1180px) {
-  .rv-gen-modal {
+  .personal-site-modal {
     width: 90%;
   }
 
