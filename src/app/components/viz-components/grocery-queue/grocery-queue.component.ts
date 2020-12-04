@@ -121,8 +121,8 @@ export class GroceryQueueComponent implements AfterViewInit {
 
     this.dialog.open(RandomVariableGenDialogComponent, {
       data: { current: randomVariable, title: rvName },
-      width: '50%',
-      height: 'auto'
+      height: 'auto',
+      panelClass: 'rv-gen-modal',
     }).afterClosed().subscribe((rv: RandomVariable) => {
       if (rv) {
         switch (rvName) {

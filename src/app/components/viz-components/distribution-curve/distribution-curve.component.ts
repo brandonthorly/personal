@@ -58,13 +58,18 @@ export class DistributionCurveComponent implements AfterViewInit, OnChanges {
   private prepData(): void {
       this._data = [];
 
+      const shift = this.params.shift || 0;
+
       if (this.densityFn === EDensityFn.NORMAL) {
-        for (let q = this.params.alpha - 4 * this.params.beta; q < this.params.alpha + 4 * this.params.beta; q++) {
-          this._data.push({q, p: jStat.normal.pdf(q, this.params.alpha, this.params.beta)});
+        const min = this.params.alpha - 4 * this.params.beta;
+        const max = this.params.alpha + 4 * this.params.beta;
+
+        for (let q = min; q < max; q++) {
+          this._data.push({q: q + shift, p: jStat.normal.pdf(q, this.params.alpha, this.params.beta)});
         }
       } else if (this.densityFn === EDensityFn.GAMMA) {
-        const shift = this.params.shift || 0;
         const approximateMax = 30 + shift;
+
         for (let q = 0; q < approximateMax; q++) {
           this._data.push({q, p: jStat.gamma.pdf(q - shift, this.params.alpha, this.params.beta / (this.params.beta + 1))});
         }

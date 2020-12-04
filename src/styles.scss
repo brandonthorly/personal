@@ -11,6 +11,10 @@ a { text-decoration: none; color: #000000; }
 
 // MATERIAL OVERIDES
 
+.rv-gen-modal {
+  width: 50%;
+}
+
 .mat-raised-button.mat-primary {
   background-color: $primary-green;
   color: #FFFFFF;
@@ -121,6 +125,10 @@ button {
 }
 
 @media screen and (max-width: 1180px) {
+  .rv-gen-modal {
+    width: 90%;
+  }
+
   mat-form-field {
     width: 50px;
     margin-right: 25px;
