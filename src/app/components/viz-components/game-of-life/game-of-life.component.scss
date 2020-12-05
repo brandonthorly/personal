@@ -1,0 +1,22 @@
+@import "../../../styles/mixins/dropdown-form.mixin";
+@import "../../../styles/mixins/page-description.mixin";
+
+.gol-viz-wrapper {
+  padding: 0 10%;
+
+  .description {
+    @include pageDescription;
+
+    mat-error {
+      margin: 20px 0;
+    }
+  }
+
+  .configuration {
+    @include dropDownForm;
+  }
+
+  .svg-wrapper {
+    position: relative;
+  }
+}

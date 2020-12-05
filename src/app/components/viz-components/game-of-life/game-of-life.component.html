@@ -1,0 +1,82 @@
+<div class="gol-viz-wrapper">
+  <div class="description">
+    <div>
+      <button mat-stroked-button color="primary" (click)="showConfigOptions = !showConfigOptions">Configure Game</button>
+      <button mat-stroked-button color="primary" (click)="redrawBoard()">Clear Board</button>
+      <button mat-stroked-button color="primary" (click)="redrawBoard(true)">Set Initial State</button>
+      <button mat-raised-button color="primary" [disabled]="gameRunningInterval" (click)="step()">Step</button>
+      <button mat-raised-button color="primary" [disabled]="gameRunningInterval" (click)="runGame()">Run</button>
+      <button mat-raised-button color="warn" [disabled]="!gameRunningInterval" (click)="stopGame()">Stop</button>
+      <mat-error *ngIf="showSelectLiveCellsError">Please click on some cells to set some initial live cells to start the game</mat-error>
+    </div>
+  </div>
+  <div class="configuration" [ngClass]="{'show': showConfigOptions}">
+    <form [formGroup]="configForm" (ngSubmit)="redrawBoard(true)">
+      <mat-form-field>
+        <mat-label>Grid Width</mat-label>
+        <input matInput type="number" placeholder="Grid width" [formControl]="gridWidthControl" min="5">
+        <mat-error *ngIf="gridWidthControl.invalid">Min size: 5</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Grid Height</mat-label>
+        <input matInput type="number" placeholder="Grid height" [formControl]="gridHeightControl" min="5">
+        <mat-error *ngIf="gridHeightControl.invalid">Min size: 5</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Game Speed (ms)</mat-label>
+        <input matInput type="number" placeholder="Game speed (ms)" [formControl]="gameSpeedControl" min="5">
+        <mat-error *ngIf="gameSpeedControl.invalid">Min speed: 5000ms, Max Speed: 5ms</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Living Color</mat-label>
+        <input required matInput class="color-picker-input" type="string" placeholder="Living Color"
+               [cpPosition]="'top'"
+               [(colorPicker)]="livingColor"
+               [style.background]="livingColor"
+               [value]="livingColor">
+        <mat-error *ngIf="!livingColor">Living color must be selected</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Dead Color</mat-label>
+        <input required matInput class="color-picker-input" type="string" placeholder="Dead Color"
+               [cpPosition]="'top'"
+               [(colorPicker)]="deadColor"
+               [style.background]="deadColor"
+               [value]="deadColor">
+        <mat-error *ngIf="!deadColor">Dead color must be selected</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Stroke Color</mat-label>
+        <input required matInput class="color-picker-input" type="string" placeholder="Stroke Color"
+               [cpPosition]="'top'"
+               [(colorPicker)]="strokeColor"
+               [style.background]="strokeColor"
+               [value]="strokeColor">
+        <mat-error *ngIf="!strokeColor">Stroke color must be selected</mat-error>
+      </mat-form-field>
+      <button mat-raised-button color="primary">Redraw</button>
+    </form>
+  </div>
+  <div #gameOfLife class="svg-wrapper">
+    <svg width="100%" height="80%"></svg>
+  </div>
+  <div class="description">
+    <div>
+      <div>
+        Select the initial 'living' squares by clicking on cells or click the 'Set an Initial State' button below to
+        populate a predefined world as a starting point. The basic rules of the game are as follows...
+      </div>
+      <ul>
+        <li>Any live cell with fewer than two live neighbours dies, as if by underpopulation.</li>
+        <li>Any live cell with two or three live neighbours lives on to the next generation.</li>
+        <li>Any live cell with more than three live neighbours dies, as if by overpopulation.</li>
+        <li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
+      </ul>
+      <div>
+        Click <b>Configure Game</b> above to tweak the game by changing the grid size, step speed, and the colors of the dead
+        and living cells.
+      </div>
+      Read about Conway's Game of Life <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">here</a>.
+    </div>
+  </div>
+</div>
