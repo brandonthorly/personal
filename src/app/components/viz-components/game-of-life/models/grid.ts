@@ -29,6 +29,10 @@ export class Grid {
 
 
   constructor(width: number = 50, height: number = 50, initializeLiving = false) {
+    if (width <= 0 || height <= 0) {
+      throw new RangeError('Grid width and height must be above zero');
+    }
+
     this._width = width;
     this._height = height;
     this._initializeMatrix(initializeLiving);
@@ -136,7 +140,6 @@ export class Grid {
       for (let y = lowY; y <= highY; y++) {
         if (!(x === cell.coordinates.x && y === cell.coordinates.y) && this.getCell({x, y}).alive) {
           livingNeighborCount++;
-          if (livingNeighborCount > 3) break;
         }
       }
     }
